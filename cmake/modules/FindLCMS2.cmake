@@ -26,13 +26,15 @@ find_path(LCMS2_INCLUDE_DIR lcms2.h
    PATHS
    ${PC_LCMS2_INCLUDEDIR}
    ${PC_LCMS2_INCLUDE_DIRS}
+   $ENV{REZ_LCMS_ROOT}/include
    PATH_SUFFIXES lcms2 liblcms2
 )
 
 find_library(LCMS2_LIBRARIES NAMES lcms2 liblcms2 lcms-2 liblcms-2
-   PATHS     
+   PATHS
    ${PC_LCMS2_LIBDIR}
    ${PC_LCMS2_LIBRARY_DIRS}
+   $ENV{REZ_LCMS_ROOT}/lib
    PATH_SUFFIXES lcms2
 )
 

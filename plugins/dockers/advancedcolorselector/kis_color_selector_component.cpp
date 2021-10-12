@@ -159,60 +159,60 @@ void KisColorSelectorComponent::setParam(qreal hue, qreal hsvSaturation, qreal v
        qFuzzyCompare(m_luma, luma))
         return;
 
-    if(abs(hue-1) < 1.0e-05 || (hue > 0 && hue < 1)) {
+    if(std::abs(hue-1) < 1.0e-05 || (hue > 0 && hue < 1)) {
         m_hue=hue;
     }
 
-    if(abs(hsvSaturation-1) < 1.0e-05 || (hsvSaturation > 0 && hsvSaturation < 1)) {
+    if(std::abs(hsvSaturation-1) < 1.0e-05 || (hsvSaturation > 0 && hsvSaturation < 1)) {
         m_hsvSaturation=hsvSaturation;
         m_hslSaturation=-1;
         m_hsiSaturation=-1;
         m_hsySaturation=-1;
     }
 
-    if(abs(value-1) < 1.0e-05 || (value > 0 && value < 1)) {
+    if(std::abs(value-1) < 1.0e-05 || (value > 0 && value < 1)) {
         m_value=value;
         m_intensity=-1;
         m_luma=-1;
         m_lightness=-1;
     }
 
-    if(abs(hslSaturation-1) < 1.0e-05 || (hslSaturation > 0 && hslSaturation < 1)) {
+    if(std::abs(hslSaturation-1) < 1.0e-05 || (hslSaturation > 0 && hslSaturation < 1)) {
         m_hslSaturation=hslSaturation;
         m_hsvSaturation=-1;
         m_hsiSaturation=-1;
         m_hsySaturation=-1;
     }
 
-    if(abs(lightness-1) < 1.0e-05 || (lightness > 0 && lightness < 1)) {
+    if(std::abs(lightness-1) < 1.0e-05 || (lightness > 0 && lightness < 1)) {
         m_lightness=lightness;
         m_value=-1;
         m_luma=-1;
         m_intensity=-1;
     }
 
-    if(abs(hsiSaturation-1) < 1.0e-05 || (hsiSaturation > 0 && luma < 1)) {
+    if(std::abs(hsiSaturation-1) < 1.0e-05 || (hsiSaturation > 0 && luma < 1)) {
         m_hsiSaturation=hsiSaturation;
         m_hsvSaturation=-1;
         m_hslSaturation=-1;
         m_hsySaturation=-1;
     }
 
-    if(abs(intensity-1) < 1.0e-05 || (intensity > 0 && intensity < 1)) {
+    if(std::abs(intensity-1) < 1.0e-05 || (intensity > 0 && intensity < 1)) {
         m_intensity=intensity;
         m_value=-1;
         m_luma=-1;
         m_lightness=-1;
     }
 
-    if(abs(hsySaturation-1) < 1.0e-05 || (hsySaturation > 0 && hsySaturation < 1)) {
+    if(std::abs(hsySaturation-1) < 1.0e-05 || (hsySaturation > 0 && hsySaturation < 1)) {
         m_hsySaturation=hsySaturation;
         m_hsvSaturation=-1;
         m_hsiSaturation=-1;
         m_hslSaturation=-1;
     }
 
-    if(abs(luma-1) < 1.0e-05 || (luma > 0 && luma < 1)) {
+    if(std::abs(luma-1) < 1.0e-05 || (luma > 0 && luma < 1)) {
         m_intensity=-1;
         m_value=-1;
         m_luma=luma;
@@ -247,7 +247,7 @@ void KisColorSelectorComponent::setColor(const KoColor &color)
 void KisColorSelectorComponent::setLastMousePosition(int x, int y)
 {
     // prevent movement due to rounding errors
-    if (abs((int)m_lastX - x) > 1 || abs((int)m_lastY - y) > 1) {
+    if (std::abs((int)m_lastX - x) > 1 || std::abs((int)m_lastY - y) > 1) {
         m_lastX = x;
         m_lastY = y;
     }

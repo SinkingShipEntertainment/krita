@@ -33,8 +33,9 @@ ELSE(SIP_VERSION)
 
   FIND_FILE(_find_sip_py FindSIP.py PATHS ${CMAKE_MODULE_PATH})
 
+  set(_sip_python_path "${KRITA_PYTHONPATH_V4};${KRITA_PYTHONPATH_V5};$ENV{PYTHONPATH}")
   if (WIN32)
-    set(_sip_python_path "${KRITA_PYTHONPATH_V4};${KRITA_PYTHONPATH_V5};$ENV{PYTHONPATH}")
+    #set(_sip_python_path "${KRITA_PYTHONPATH_V4};${KRITA_PYTHONPATH_V5};$ENV{PYTHONPATH}")
 
     EXECUTE_PROCESS(COMMAND ${CMAKE_COMMAND} -E env
       "PYTHONPATH=${_sip_python_path}"
@@ -43,12 +44,12 @@ ELSE(SIP_VERSION)
   else (WIN32)
     set(_pyqt5_python_path "${KRITA_PYTHONPATH_V4}:${KRITA_PYTHONPATH_V5}:$ENV{PYTHONPATH}")
 
-    EXECUTE_PROCESS(COMMAND ${CMAKE_COMMAND} -E env 
+    EXECUTE_PROCESS(COMMAND ${CMAKE_COMMAND} -E env
       "PYTHONPATH=${_sip_python_path}"
       ${PYTHON_EXECUTABLE} ${_find_sip_py}
       OUTPUT_VARIABLE sip_config)
   endif (WIN32)
-  
+
   IF(sip_config)
     STRING(REGEX REPLACE "^sip_version:([^\n]+).*$" "\\1" SIP_VERSION ${sip_config})
     STRING(REGEX REPLACE ".*\nsip_version_str:([^\n]+).*$" "\\1" SIP_VERSION_STR ${sip_config})

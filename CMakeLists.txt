@@ -106,6 +106,12 @@ if (ANDROID)
     endif()
 endif()
 
+# -------------------------
+# REZ (CentOs 7 issue with building MOC with multiple jobs)
+set(AUTOGEN_PARALLEL "1")
+set(CMAKE_AUTOGEN_PARALLEL "1")
+# -------------------------
+
 message(STATUS "Krita version: ${KRITA_VERSION_STRING}")
 
 # Define the generic version of the Krita libraries here
@@ -336,7 +342,7 @@ QCoreApplication::setAttribute(Qt::AA_MSWindowsUseWinTabAPI);
     option(USE_QT_TABLET_WINDOWS "Do not use Krita's forked Wintab and Windows Ink support on Windows, but leave everything to Qt." ON)
 	add_feature_info("Use Qt's Windows Tablet Support" USE_QT_TABLET_WINDOWS "Do not use Krita's forked Wintab and Windows Ink support on Windows, but leave everything to Qt.")
     configure_file(config_use_qt_tablet_windows.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/config_use_qt_tablet_windows.h)
-endif ()     
+endif ()
 
 
 set(CMAKE_REQUIRED_INCLUDES ${Qt5Core_INCLUDE_DIRS} ${Qt5Gui_INCLUDE_DIRS})
@@ -454,7 +460,7 @@ add_definitions(
   -DQT_STRICT_ITERATORS
   -DQT_NO_SIGNALS_SLOTS_KEYWORDS
   -DQT_NO_URL_CAST_FROM_STRING
-  -DQT_USE_FAST_CONCATENATION 
+  -DQT_USE_FAST_CONCATENATION
   -DQT_USE_FAST_OPERATOR_PLUS
 )
 
@@ -570,6 +576,7 @@ endif()
 
 find_package(PNG REQUIRED)
 list (APPEND ANDROID_EXTRA_LIBS ${PNG_LIBRARY})
+include_directories(${PNG_INCLUDE_DIR})
 
 if (APPLE)
     # this is not added correctly on OSX -- see https://forum.kde.org/viewtopic.php?f=139&t=101867&p=221242#p221242
@@ -608,15 +615,16 @@ endif()
 ##
 find_package(KSeExpr 4.0.0.0)
 set_package_properties(KSeExpr PROPERTIES
-    URL "https://invent.kde.org/graphics/kseexpr"
-    TYPE OPTIONAL
-    PURPOSE "Required by the SeExpr generator layer"
+URL "https://invent.kde.org/graphics/kseexpr"
+TYPE OPTIONAL
+PURPOSE "Required by the SeExpr generator layer"
 )
 macro_bool_to_01(KSeExpr_FOUND HAVE_SEEXPR)
 configure_file(config-seexpr.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/config-seexpr.h )
 if(KSeExpr_FOUND)
+    include_directories(${KSeExpr_INCLUDE_DIRS})
     get_target_property(KSeExpr_LIBRARY KSeExpr::KSeExpr "LOCATION")
-    get_target_property(KSeExprUI_LIBRARY KSeExpr::KSeExprUI "LOCATION") 
+    get_target_property(KSeExprUI_LIBRARY KSeExpr::KSeExprUI "LOCATION")
     list (APPEND ANDROID_EXTRA_LIBS ${KSeExpr_LIBRARY} ${KSeExprUI_LIBRARY})
 endif()
 
@@ -637,7 +645,8 @@ set_package_properties(OpenEXR PROPERTIES
 macro_bool_to_01(OPENEXR_FOUND HAVE_OPENEXR)
 set(LINK_OPENEXR_LIB)
 if(OPENEXR_FOUND)
-    include_directories(SYSTEM ${OPENEXR_INCLUDE_DIRS})
+    #include_directories(SYSTEM ${OPENEXR_INCLUDE_DIRS})
+    include_directories(${OPENEXR_INCLUDE_DIRS})
     set(LINK_OPENEXR_LIB ${OPENEXR_LIBRARIES})
     add_definitions(${OPENEXR_DEFINITIONS})
 endif()
@@ -649,6 +658,7 @@ set_package_properties(TIFF PROPERTIES
     TYPE OPTIONAL
     PURPOSE "Required by the Krita TIFF filter")
 if (TIFF_FOUND)
+    include_directories(${TIFF_INCLUDE_DIRS})
     list (APPEND ANDROID_EXTRA_LIBS ${TIFF_LIBRARY})
 endif()
 
@@ -659,6 +669,7 @@ set_package_properties(JPEG PROPERTIES
     TYPE OPTIONAL
     PURPOSE "Required by the Krita JPEG filter")
 if (JPEG_FOUND)
+    include_directories(${JPEG_INCLUDE_DIR})
     list (APPEND ANDROID_EXTRA_LIBS ${JPEG_LIBRARY})
 endif()
 

@@ -1,69 +1,119 @@
-# - Find OCIO
-# Find the OCIO includes and library
-# This module defines
-#  OCIO_INCLUDE_DIR, where to find OpenImageIO/version.h
-#  OCIO_LIBRARIES, the libraries needed to use OCIO.
-#  OCIO_VERSION, The value of OCIO_VERSION defined in oiio.h
-#  OCIO_FOUND, If false, do not try to use OCIO.
-
-
-# Copyright (c) 2008, Adrian Page, <adrian@pagenet.plus.com>
-# Copyright (c) 2009, Cyrille Berger, <cberger@cberger.net>
-# Copyright (c) 2012, Boudewijn Rempt, <boud@valdyas.org>
 #
-# Redistribution and use is allowed according to the terms of the BSD license.
-# For details see the accompanying COPYING-CMAKE-SCRIPTS file.
+# Copyright 2019 Pixar
+#
+# Licensed under the Apache License, Version 2.0 (the "Apache License")
+# with the following modification; you may not use this file except in
+# compliance with the Apache License and the following modification to it:
+# Section 6. Trademarks. is deleted and replaced with:
+#
+# 6. Trademarks. This License does not grant permission to use the trade
+#    names, trademarks, service marks, or product names of the Licensor
+#    and its affiliates, except as required to comply with Section 4(c) of
+#    the License and to reproduce the content of the NOTICE file.
+#
+# You may obtain a copy of the Apache License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the Apache License with the above modification is
+# distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+# KIND, either express or implied. See the Apache License for the specific
+# language governing permissions and limitations under the Apache License.
+#
 
-if(OCIO_PATH)
-    message(STATUS "OCIO path explicitly specified: ${OCIO_PATH}")
+if(UNIX)
+    find_path(OCIO_BASE_DIR
+            include/OpenColorIO/OpenColorABI.h
+        HINTS
+            "${OCIO_LOCATION}"
+            "$ENV{OCIO_LOCATION}"
+            "/opt/ocio"
+    )
+    find_path(OCIO_LIBRARY_DIR
+            libOpenColorIO.so
+        HINTS
+            "${OCIO_LOCATION}"
+            "$ENV{OCIO_LOCATION}"
+            "${OCIO_BASE_DIR}"
+        PATH_SUFFIXES
+            lib/
+        DOC
+            "OpenColorIO library path"
+    )
+elseif(WIN32)
+    find_path(OCIO_BASE_DIR
+            include/OpenColorIO/OpenColorABI.h
+        HINTS
+            "${OCIO_LOCATION}"
+            "$ENV{OCIO_LOCATION}"
+    )
+    find_path(OCIO_LIBRARY_DIR
+            OpenColorIO.lib
+        HINTS
+            "${OCIO_LOCATION}"
+            "$ENV{OCIO_LOCATION}"
+            "${OCIO_BASE_DIR}"
+        PATH_SUFFIXES
+            lib/
+        DOC
+            "OpenColorIO library path"
+    )
 endif()
 
-if(OCIO_INCLUDE_PATH)
-    message(STATUS "OCIO INCLUDE_PATH explicitly specified: ${OCIO_INCLUDE_PATH}")
-endif()
-
-if(OCIO_LIBRARY_PATH)
-    message(STATUS "OCIO LIBRARY_PATH explicitly specified: ${OCIO_LIBRARY_PATH}")
-endif()
-
-find_path(OCIO_INCLUDE_DIR OpenColorIO.h
-        ${OCIO_INCLUDE_PATH}
-        ${OCIO_PATH}/include/
-        /usr/include
-        /usr/local/include
-        /sw/include
-        /opt/local/include
-        PATH_SUFFIXES OpenColorIO
-        DOC "The directory where OpenColorIO/OpenColorIO.h resides"
+find_path(OCIO_INCLUDE_DIR
+        OpenColorIO/OpenColorABI.h
+    HINTS
+        "${OCIO_LOCATION}"
+        "$ENV{OCIO_LOCATION}"
+        "${OCIO_BASE_DIR}"
+    PATH_SUFFIXES
+        include/
+    DOC
+        "OpenColorIO headers path"
 )
 
-find_library(OCIO_LIBRARIES OpenColorIO
-        PATHS
-        ${OCIO_LIBRARY_PATH}
-        ${OCIO_PATH}/lib/
-        /usr/lib64
-        /usr/lib
-        /usr/local/lib64
-        /usr/local/lib
-        /sw/lib
-        /opt/local/lib
-        DOC "The OCIO library"
+list(APPEND OCIO_INCLUDE_DIRS ${OCIO_INCLUDE_DIR})
+
+find_library(OCIO_LIBRARY
+        OpenColorIO
+    HINTS
+        "${OCIO_LOCATION}"
+        "$ENV{OCIO_LOCATION}"
+        "${OCIO_BASE_DIR}"
+    PATH_SUFFIXES
+        lib/
+    DOC
+        "OCIO's ${OCIO_LIB} library path"
 )
+
+list(APPEND OCIO_LIBRARIES ${OCIO_LIBRARY})
+
+if(OCIO_INCLUDE_DIRS AND EXISTS "${OCIO_INCLUDE_DIR}/OpenColorIO/OpenColorABI.h")
+    file(STRINGS ${OCIO_INCLUDE_DIR}/OpenColorIO/OpenColorABI.h
+        fullVersion
+        REGEX
+        "#define OCIO_VERSION .*$")
+    string(REGEX MATCH "[0-9]+.[0-9]+.[0-9]+" OCIO_VERSION ${fullVersion})
+endif()
+
+# handle the QUIETLY and REQUIRED arguments and set OCIO_FOUND to TRUE if
+# all listed variables are TRUE
+include(FindPackageHandleStandardArgs)
 
 if(OCIO_INCLUDE_DIR AND OCIO_LIBRARIES)
-   set(OCIO_FOUND TRUE) 
+   set(OCIO_FOUND TRUE)
 else()
    set(OCIO_FOUND FALSE)
 endif()
 
+find_package_handle_standard_args(OpenColorIO
+    REQUIRED_VARS
+        OCIO_LIBRARIES
+        OCIO_INCLUDE_DIR
+        OCIO_INCLUDE_DIRS
+    VERSION_VAR
+        OCIO_VERSION
+)
 
-if (NOT OCIO_FOUND)
-    if(NOT OCIO_FIND_QUIETLY)
-        if(OCIO_FIND_REQUIRED)
-           message(FATAL_ERROR "Required package OpenColorIO NOT found")
-        else()
-           message(STATUS "OpenColorIO NOT found")
-        endif()
-    endif()
-endif ()
 mark_as_advanced(OCIO_INCLUDE_DIR OCIO_LIBRARIES)

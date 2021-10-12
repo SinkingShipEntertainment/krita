@@ -327,9 +327,9 @@ public:
             // if sign changes
             if ((delta0[i] * delta1[i]) < 0 && delta0[i] > 0) {
                 slope = 0;
-            } else if (abs(slope) > 3 * abs(delta0[i])) {
+            } else if (std::abs(slope) > 3 * std::abs(delta0[i])) {
                 slope = 3 * delta0[i];
-            } else if (abs(slope) > 3 * abs(delta1[i])) {
+            } else if (std::abs(slope) > 3 * std::abs(delta1[i])) {
                 slope = 3 * delta1[i];
             }
 
@@ -473,7 +473,7 @@ public:
         //
         // f00, f03, f30, f33 are corners and their respective derivatives are represented as
         // d00, d03, d30, d33
-        //   
+        //
         //   +-----> U/x (row)
         // |
         // |                 f00-------f01-------f02-------f03

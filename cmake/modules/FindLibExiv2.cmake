@@ -63,11 +63,15 @@ find_package(PkgConfig QUIET)
 pkg_check_modules(PC_EXIV2 QUIET exiv2)
 
 find_path(LibExiv2_INCLUDE_DIRS NAMES exiv2/exif.hpp
-    HINTS ${PC_EXIV2_INCLUDEDIR}
+    HINTS
+        ${PC_EXIV2_INCLUDEDIR}
+        $ENV{REZ_EXIV2_ROOT}/include
 )
 
 find_library(LibExiv2_LIBRARIES NAMES exiv2 libexiv2
-    HINTS ${PC_EXIV2_LIBRARY_DIRS}
+    HINTS
+        ${PC_EXIV2_LIBRARY_DIRS}
+        $ENV{REZ_EXIV2_ROOT}/lib64
 )
 
 set(LibExiv2_VERSION ${PC_EXIV2_VERSION})

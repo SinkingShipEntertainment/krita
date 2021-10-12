@@ -33,3 +33,7 @@ BROWSE
 build_dir
 .flatpak-builder
 .cache
+
+# SSE
+_rez_build
+.vscode
