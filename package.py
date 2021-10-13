@@ -82,5 +82,6 @@ def commands():
     env.KRITA_LOCATION.append("{root}")
 
     env.PATH.append("{root}/bin")
+    env.QT_QPA_FONTDIR = "/usr/share/X11/fonts/Type1/"
 
 uuid = "repository.krita"
