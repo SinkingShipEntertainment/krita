@@ -30,11 +30,10 @@ with scope("config") as c:
     #c.build_thread_count = "physical_cores"
 
 requires = [
-    "python-3",
-    "sip",
     "qt-5.15.2",
+    "sip",
     "PyQt5",
-    "boost-1.70",
+    "boost-1.70.0",
     "libpng",
     "libtiff",
     "libjpeg",
@@ -53,7 +52,7 @@ private_build_requires = [
 ]
 
 variants = [
-    ["platform-linux", "arch-x86_64", "os-centos-7"],
+    ["platform-linux", "arch-x86_64", "os-centos-7", "python-3.7.7"],
 ]
 
 # Pass cmake arguments:
