@@ -46,14 +46,19 @@ except ValueError:
 
 # If we use a system install with a custom PYTHONPATH, PyQt5
 # may not be within the system tree.
-pyqt5_dir = os.path.dirname(PyQt5.__file__)
-lib_site_packages = get_python_lib(plat_specific=1)
-# Check this first.
-if pyqt5_dir.startswith(lib_site_packages):
-    pyqt_sip_dir = os.path.join(get_python_lib(plat_specific=1), "PyQt5", "bindings")
+rez_pyqt5_root_dir = os.environ.get("REZ_PYQT5_ROOT", None)
+if rez_pyqt5_root_dir:
+    pyqt_sip_dir = os.path.join(rez_pyqt5_root_dir, "share", "sip", "PyQt5")
+
 else:
-    # If so, change it.
-    pyqt_sip_dir = os.path.join(pyqt5_dir, "bindings")
+    pyqt5_dir = os.path.dirname(PyQt5.__file__)
+    lib_site_packages = get_python_lib(plat_specific=1)
+    # Check this first.
+    if pyqt5_dir.startswith(lib_site_packages):
+        pyqt_sip_dir = os.path.join(get_python_lib(plat_specific=1), "PyQt5", "bindings")
+    else:
+        # If so, change it.
+        pyqt_sip_dir = os.path.join(pyqt5_dir, "bindings")
 
 if not os.path.exists(pyqt_sip_dir):  # Fallback for older PyQt5/SIP
     pyqt_sip_dir = os.path.join(sys.prefix, "share", "sip", "PyQt5")
